@@ -103,19 +103,19 @@ namespace CraftingSim.Model
         /// <param name="file">Path to the materials file</param>
         public void LoadMaterialsFromFile(string file)
         {
-            if (!File.Exists(file))
-                throw new FileNotFoundException("File not found", file);
-            string[] lines = File.ReadAllLines(file);
-            foreach (string line in lines)
+            StreamReader reader = new StreamReader("materials.txt");
+            string line;
+            while ((line = reader.ReadLine()) != null)
             {
                 string[] parts = line.Split(',');
-                if (parts.Length != 2)
-                    throw new FormatException("Invalid file format");
                 int id = int.Parse(parts[0]);
                 string name = parts[1];
+                int quantity = int.Parse(parts[2]);
+
                 IMaterial material = new Material(id, name);
-                AddMaterial(material, 1);
+                AddMaterial(material, quantity);
             }
+            reader.Close();
             //TODO Implement Me
         }
     }
