@@ -54,7 +54,7 @@ namespace CraftingSim.Model
                 IRecipe recipe = new Recipe(name, successRate, requiredMaterials);
                 recipeList.Add(recipe);
             }
-            
+
             while ((line = reader2.ReadLine()) != null)
             {
                 string[] parts = line.Split(',');
@@ -95,7 +95,7 @@ namespace CraftingSim.Model
                     break;
                 }
             }
-            
+
             if (selected == null)
                 return "Recipe not found.";
 
