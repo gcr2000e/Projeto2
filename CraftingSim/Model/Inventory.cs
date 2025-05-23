@@ -103,7 +103,8 @@ namespace CraftingSim.Model
         /// <param name="file">Path to the materials file</param>
         public void LoadMaterialsFromFile(string file)
         {
-            StreamReader reader = new StreamReader("materials.txt");
+            using StreamReader reader = new StreamReader("materials.txt");
+            string filePath = Path.Combine(Environment.CurrentDirectory, file);
             string line;
             while ((line = reader.ReadLine()) != null)
             {

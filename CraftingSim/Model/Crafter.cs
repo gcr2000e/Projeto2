@@ -34,8 +34,28 @@ namespace CraftingSim.Model
         {
             using StreamReader reader = new StreamReader("IronSword.txt");
             using StreamReader reader2 = new StreamReader("LeatherBooths.txt");
+            string recipeFile = recipeFiles[0];
+            string recipeFile2 = recipeFiles[1];
             string line;
             while ((line = reader.ReadLine()) != null)
+            {
+                string[] parts = line.Split(',');
+                string name = parts[0];
+                double successRate = double.Parse(parts[1]);
+                Dictionary<IMaterial, int> requiredMaterials = new Dictionary<IMaterial, int>();
+
+                for (int i = 2; i < parts.Length; i += 2)
+                {
+                    IMaterial material = new Material(parts[i]);
+                    int quantity = int.Parse(parts[i + 1]);
+                    requiredMaterials.Add(material, quantity);
+                }
+
+                IRecipe recipe = new Recipe(name, successRate, requiredMaterials);
+                recipeList.Add(recipe);
+            }
+            
+            while ((line = reader2.ReadLine()) != null)
             {
                 string[] parts = line.Split(',');
                 string name = parts[0];
