@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 
 namespace CraftingSim.Model
@@ -31,7 +32,25 @@ namespace CraftingSim.Model
         /// <param name="recipeFiles">Array of file paths</param>
         public void LoadRecipesFromFile(string[] recipeFiles)
         {
-  
+            using StreamReader reader = new StreamReader("recipes.txt");
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                string[] parts = line.Split(',');
+                string name = parts[0];
+                double successRate = double.Parse(parts[1]);
+                Dictionary<IMaterial, int> requiredMaterials = new Dictionary<IMaterial, int>();
+
+                for (int i = 2; i < parts.Length; i += 2)
+                {
+                    IMaterial material = new Material(parts[i]);
+                    int quantity = int.Parse(parts[i + 1]);
+                    requiredMaterials.Add(material, quantity);
+                }
+
+                IRecipe recipe = new Recipe(name, successRate, requiredMaterials);
+                recipeList.Add(recipe);
+            }
             //TODO Implement Me
         }
 
@@ -86,6 +105,56 @@ namespace CraftingSim.Model
             else
                 return "Crafting '" + selected.Name + "' failed. Materials lost.";
 
+        }
+    }
+
+    public class Recipe : IRecipe
+    {
+        public string Name { get; }
+        public double SuccessRate { get; }
+        public Dictionary<IMaterial, int> RequiredMaterials { get; }
+
+        IReadOnlyDictionary<IMaterial, int> IRecipe.RequiredMaterials => RequiredMaterials;
+
+        public Recipe(string name, double successRate,
+                Dictionary<IMaterial, int> requiredMaterials)
+        {
+            Name = name;
+            SuccessRate = successRate;
+            RequiredMaterials = requiredMaterials;
+        }
+
+        public int CompareTo(IRecipe other)
+        {
+            if (other == null) return 1;
+            return string.Compare(Name, other.Name, StringComparison.Ordinal);
+        }
+    }
+
+    public class Material : IMaterial
+    {
+        public int Id { get; }
+        public string Name { get; }
+
+        public Material(string name)
+        {
+            Name = name;
+            Id = new Random().Next(1, 1000); // Generate a random ID for the material
+        }
+
+        public bool Equals(IMaterial other)
+        {
+            return other != null && (Id == other.Id || Name.Equals(other.Name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as IMaterial);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name);
         }
     }
 }

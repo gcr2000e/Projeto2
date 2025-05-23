@@ -42,10 +42,10 @@ namespace CraftingSim.Controller
                         view.DisplayMaterials(inventory);
                         break;
                     case "View Recipes":
-                        view.DisplayRecipes(crafter.Recipes);
+                        view.DisplayRecipes(crafter.RecipeList);
                         break;
                     case "Craft Item":
-                        string recipeName = view.AskForRecipe(crafter.Recipes);
+                        string recipeName = view.AskForRecipe(crafter.RecipeList);
                         string result = crafter.CraftItem(recipeName);
                         view.ShowResults(result);
                         break;
