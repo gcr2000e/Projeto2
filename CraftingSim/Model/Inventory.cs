@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace CraftingSim.Model
 {
@@ -100,6 +103,19 @@ namespace CraftingSim.Model
         /// <param name="file">Path to the materials file</param>
         public void LoadMaterialsFromFile(string file)
         {
+            if (!File.Exists(file))
+                throw new FileNotFoundException("File not found", file);
+            string[] lines = File.ReadAllLines(file);
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+                if (parts.Length != 2)
+                    throw new FormatException("Invalid file format");
+                int id = int.Parse(parts[0]);
+                string name = parts[1];
+                IMaterial material = new Material(id, name);
+                AddMaterial(material, 1);
+            }
             //TODO Implement Me
         }
     }

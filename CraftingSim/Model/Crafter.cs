@@ -138,8 +138,14 @@ namespace CraftingSim.Model
 
         public Material(string name)
         {
-            Name = name;
+            //Name = name;
             Id = new Random().Next(1, 1000); // Generate a random ID for the material
+        }
+
+        public Material(int id, string name)
+        {
+            Id = id;
+            Name = name;
         }
 
         public bool Equals(IMaterial other)
